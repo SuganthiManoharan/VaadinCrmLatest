@@ -34,22 +34,22 @@ jobs:
             - store_artifacts:
                 path: reports
                 destination: reports   
-jobs:
-  build-docker-image:
-    executor:
-      name: docker/docker
-      tag: "3.6"
-    steps:
-      - checkout
-      - docker/install-docker-tools
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Build and push Docker image
-          command: |
-            docker build -t vaadincrapplicaton.azurecr.io/VaadinCRapplicaton:latest .
-            echo $DOCKER_PASS | docker login dockerdotnetcoreapi.azurecr.io -u $DOCKER_USER --password-stdin
-            docker push dockerdotnetcoreapi.azurecr.io/dotnet-api:latest
+                
+    build-docker-image:
+      executor:
+        name: docker/docker
+        tag: "3.6"
+      steps:
+        - checkout
+        - docker/install-docker-tools
+        - setup_remote_docker:
+            docker_layer_caching: true
+        - run:
+            name: Build and push Docker image
+            command: |
+              docker build -t vaadincrapplicaton.azurecr.io/VaadinCRapplicaton:latest .
+              echo $DOCKER_PASS | docker login dockerdotnetcoreapi.azurecr.io -u $DOCKER_USER --password-stdin
+              docker push dockerdotnetcoreapi.azurecr.io/dotnet-api:latest
                
          
 workflows:
