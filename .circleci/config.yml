@@ -3,6 +3,8 @@ orbs:
   gcp-gcr: circleci/gcp-gcr@0.15.0
   cloudrun: circleci/gcp-cloud-run@1.0.1
   gcp-cli: circleci/gcp-cli@2.1
+  docker: circleci/docker@2.2.0
+
 executors:
 
   gcloud-executor:
@@ -32,51 +34,24 @@ jobs:
             - store_artifacts:
                 path: reports
                 destination: reports   
+jobs:
+  build-docker-image:
+    executor:
+      name: docker/docker
+      tag: "3.6"
+    steps:
+      - checkout
+      - docker/install-docker-tools
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build and push Docker image
+          command: |
+            docker build -t vaadincrapplicaton.azurecr.io/VaadinCRapplicaton:latest .
+            echo $DOCKER_PASS | docker login dockerdotnetcoreapi.azurecr.io -u $DOCKER_USER --password-stdin
+            docker push dockerdotnetcoreapi.azurecr.io/dotnet-api:latest
+               
          
-    build_push_image_gcr:
-            
-        description: Build docker image and push to gcr registry
-        executor: gcp-gcr/default
-        machine:
-          image: ubuntu-2004:202010-01
-        steps:
-          - checkout
-          
-          - run:
-              name: Build app binary and Docker image
-              command: |
-                echo 'export PATH=~$PATH:~/.local/bin' >> $BASH_ENV
-                echo ${GCP_PROJECT_KEY} | base64 --decode --ignore-garbage > $HOME/gcloud-service-key.json
-                echo 'export GOOGLE_CLOUD_KEYS=$(cat $HOME/gcloud-service-key.json)' >> $BASH_ENV
-                echo 'export TAG=$CIRCLE_SHA1' >> $BASH_ENV                 
-          
-          - gcp-gcr/gcr-auth
-          
-          - gcp-gcr/build-image:
-              dockerfile: Dockerfile
-              google-project-id: GOOGLE_PROJECT_ID
-              image: $CIRCLE_WORKFLOW_ID
-              registry-url: "gcr.io"
-              tag: "latest"              
-
-          - gcp-gcr/push-image:
-              google-project-id: GOOGLE_PROJECT_ID
-              image: $CIRCLE_WORKFLOW_ID
-              registry-url: "gcr.io"
-              tag: "latest"
-
-    gcp_cloudrun_deploy:
-        description: Deploy using cloud run
-        executor: machine-executor
-        steps:
-          - cloudrun/init
-          - cloudrun/deploy:                            
-              platform: 'managed'
-              image: 'gcr.io/$GOOGLE_PROJECT_ID/$CIRCLE_WORKFLOW_ID'
-              service-name: 'vaadin-ui-service'
-              region: 'europe-west1'
-              unauthenticated: true
-
 workflows:
   version: 2
   workflow:
@@ -85,9 +60,6 @@ workflows:
     - test:
           requires:
             - build
-    - build_push_image_gcr:
-          requires:
-            - build
-    - gcp_cloudrun_deploy:
-          requires:
-            - build_push_image_gcr
+  - build-and-deploy:
+    jobs:
+      - build-docker-image 
