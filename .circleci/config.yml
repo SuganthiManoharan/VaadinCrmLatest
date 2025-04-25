@@ -59,5 +59,6 @@ workflows:
           requires:
             - build
   - build-and-deploy:
-    jobs:
-      - build-docker-image 
+        requires:
+            - build
+      
