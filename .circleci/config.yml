@@ -21,7 +21,7 @@ jobs:
                 path: reports
                 destination: reports                   
          
-  workflow:
+workflow:
     jobs:
     - build
     - test:
