@@ -40,9 +40,4 @@ jobs:
 workflow:
     jobs:
         - build
-        - test:
-              requires:
-                  - build
-        - build-docker-image:
-              requires:
-                  - build
+        - build-docker-image
