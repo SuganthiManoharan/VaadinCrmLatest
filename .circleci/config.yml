@@ -45,8 +45,8 @@ jobs:
             name: Build and push Docker image
             command: |
               docker build -t vaadincrapplicaton.azurecr.io/VaadinCRapplicaton:latest .
-              echo $DOCKER_PASS | docker login dockerdotnetcoreapi.azurecr.io -u $DOCKER_USER --password-stdin
-              docker push dockerdotnetcoreapi.azurecr.io/dotnet-api:latest             
+              echo $DOCKER_PASS | docker login vaadincrapplicaton.azurecr.io -u $DOCKER_USER --password-stdin
+              docker push vaadincrapplicaton.azurecr.io/VaadinCRapplicaton:latest             
          
 workflows:
     jobs:
