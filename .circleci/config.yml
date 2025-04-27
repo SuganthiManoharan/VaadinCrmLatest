@@ -24,7 +24,7 @@ jobs:
     build-docker-image:
         executor:
             name: docker/docker
-            tag: "3.6"
+            tag: "latest"
         steps:
             - checkout
             - docker/install-docker-tools
@@ -36,8 +36,7 @@ jobs:
                       docker build -t vaadincrapplicaton.azurecr.io/VaadinCRapplicaton:latest .
                       echo $DOCKER_PASS | docker login vaadincrapplicaton.azurecr.io -u $DOCKER_USER --password-stdin
                       docker push vaadincrapplicaton.azurecr.io/VaadinCRapplicaton:latest             
-                  
-         
+
 workflow:
     jobs:
         - build
