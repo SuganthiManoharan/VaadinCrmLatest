@@ -5,12 +5,6 @@ orbs:
   gcp-cli: circleci/gcp-cli@2.1
   docker: circleci/docker@2.2.0
   
-executors:
-  gcloud-executor:
-    docker:
-      - image: google/cloud-sdk
-  machine-executor:
-    machine: true
 jobs:
     build:
         docker:
@@ -33,10 +27,10 @@ jobs:
                 path: reports
                 destination: reports                   
     build-docker-image:
-      executor:
-        name: docker/docker
+        executor:
+            name: docker/docker
         tag: "3.6"
-      steps:
+        steps:
         - checkout
         - docker/install-docker-tools
         - setup_remote_docker:

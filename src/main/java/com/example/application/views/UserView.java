@@ -16,8 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @PermitAll
 @Route(value = "user", layout = MainLayout.class) // <1>
 @PageTitle("User | Vaadin CRM")
-
-
 public class UserView extends VerticalLayout {
     private final SecurityUserDetailsService service;
     UserForm form;
