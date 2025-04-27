@@ -1,4 +1,6 @@
 version: '2.1'
+orbs:
+    docker: circleci/docker@2.2.0
 jobs:
     build:
         docker:
@@ -35,7 +37,7 @@ jobs:
                   command: |
                       docker build -t vaadincrapplicaton.azurecr.io/VaadinCRapplicaton:latest .
                       echo $DOCKER_PASS | docker login vaadincrapplicaton.azurecr.io -u $DOCKER_USER --password-stdin
-                      docker push vaadincrapplicaton.azurecr.io/VaadinCRapplicaton:latest             
+                      docker push vaadincrapplicaton.azurecr.io/VaadinCRapplicaton:latest
 workflows:
     build-test-and-deploy:
         jobs:
