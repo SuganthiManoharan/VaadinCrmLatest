@@ -18,12 +18,32 @@ jobs:
             - checkout
             - run: mvn test -e
             - store_artifacts:
-                path: reports
-                destination: reports                   
+                  path: reports
+                  destination: reports
+
+    build-docker-image:
+        executor:
+            name: docker/docker
+            tag: "3.6"
+        steps:
+            - checkout
+            - docker/install-docker-tools
+            - setup_remote_docker:
+                  docker_layer_caching: true
+            - run:
+                  name: Build and push Docker image
+                  command: |
+                      docker build -t vaadincrapplicaton.azurecr.io/VaadinCRapplicaton:latest .
+                      echo $DOCKER_PASS | docker login vaadincrapplicaton.azurecr.io -u $DOCKER_USER --password-stdin
+                      docker push vaadincrapplicaton.azurecr.io/VaadinCRapplicaton:latest             
+                  
          
 workflow:
     jobs:
-    - build
-    - test:
-          requires:
-            - build
+        - build
+        - test:
+              requires:
+                  - build
+        - build-and-deploy:
+              requires:
+                  - build
