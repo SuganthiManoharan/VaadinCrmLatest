@@ -24,9 +24,8 @@ jobs:
                   destination: reports
 
     build-docker-image:
-        executor:
-            name: docker/docker
-            tag: "latest"
+        docker:
+            - image: cimg/azure:2025.01
         steps:
             - checkout
             - docker/install-docker-tools
