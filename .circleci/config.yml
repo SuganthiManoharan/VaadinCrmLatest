@@ -36,8 +36,8 @@ jobs:
                       docker build -t vaadincrapplicaton.azurecr.io/VaadinCRapplicaton:latest .
                       echo $DOCKER_PASS | docker login vaadincrapplicaton.azurecr.io -u $DOCKER_USER --password-stdin
                       docker push vaadincrapplicaton.azurecr.io/VaadinCRapplicaton:latest             
-
-workflow:
-    jobs:
-        - build
-        - build-docker-image
+workflows:
+    build-test-and-deploy:
+        jobs:
+            - build
+            - build-docker-image
