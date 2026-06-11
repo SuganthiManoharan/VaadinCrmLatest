@@ -9,7 +9,7 @@ jobs:
           MAVEN_CLI_OPTS: "--batch-mode"
         steps:
             - checkout
-            - run: mvn $MAVEN_CLI_OPTS clean package -Pproduction -e
+            - run: mvn $MAVEN_CLI_OPTS -Dvaadin.offlineKey="pro-6e6ed525-d743-4243-a6db-427a4220f6c8" clean package -Pproduction -e
             - store_artifacts:
                 path: target
                 destination: target                
